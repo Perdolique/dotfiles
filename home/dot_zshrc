@@ -11,10 +11,6 @@ else
   print -u2 -- "Oh My Zsh is not installed at $ZSH"
 fi
 
-setopt noautomenu
-setopt nomenucomplete
-setopt nosharehistory
-
 # Keep PATH entries unique while loading optional developer tools.
 typeset -gU path PATH
 
@@ -25,8 +21,6 @@ path_prepend() {
 }
 
 path_prepend "/usr/local/sbin"
-path_prepend "$HOME/dotnet"
-path_prepend "$HOME/.lmstudio/bin"
 path_prepend "$HOME/.local/bin"
 
 if [[ -z "${PNPM_HOME:-}" ]]; then
@@ -50,30 +44,9 @@ unset homebrew_prefix
 
 unfunction path_prepend
 
-# Load Heroku completion from its platform-specific cache when available.
-for heroku_completion_file in \
-  "$HOME/Library/Caches/heroku/autocomplete/zsh_setup" \
-  "${XDG_CACHE_HOME:-$HOME/.cache}/heroku/autocomplete/zsh_setup"; do
-  if [[ -r "$heroku_completion_file" ]]; then
-    source "$heroku_completion_file"
-    break
-  fi
-done
-unset heroku_completion_file
-
-# Load Google Cloud CLI path and completion scripts relative to its executable.
-if (( $+commands[gcloud] )); then
-  gcloud_executable="${commands[gcloud]:A}"
-  gcloud_root="${gcloud_executable:h:h}"
-  [[ -r "$gcloud_root/path.zsh.inc" ]] && source "$gcloud_root/path.zsh.inc"
-  [[ -r "$gcloud_root/completion.zsh.inc" ]] && source "$gcloud_root/completion.zsh.inc"
-  unset gcloud_executable gcloud_root
-fi
-
 zstyle ':completion:*:*:git*:*' ignored-patterns '*ORIG_HEAD'
 
 alias python='python3'
-alias pip='pip3'
 
 # Initialize user-installed Perl modules only when local::lib is present.
 if (( $+commands[perl] )) && [[ -d "$HOME/perl5/lib/perl5" ]]; then
@@ -82,13 +55,6 @@ if (( $+commands[perl] )) && [[ -d "$HOME/perl5/lib/perl5" ]]; then
   fi
   unset perl_environment
 fi
-
-# Raise the soft file descriptor limit when the platform permits it.
-file_descriptor_hard_limit="$(ulimit -Hn)"
-if [[ "$file_descriptor_hard_limit" == <-> ]] && (( file_descriptor_hard_limit >= 4096 )); then
-  ulimit -Sn 4096 2>/dev/null
-fi
-unset file_descriptor_hard_limit
 
 # Load Mole completion only when the command is available.
 if (( $+commands[mole] )); then
