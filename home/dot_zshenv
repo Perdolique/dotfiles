@@ -1,0 +1,5 @@
+# Load optional tool environments in every Zsh process.
+for environment_file in "$HOME/.vite-plus/env" "$HOME/.cargo/env"; do
+  [[ -r "$environment_file" ]] && source "$environment_file"
+done
+unset environment_file
