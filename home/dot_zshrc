@@ -11,6 +11,10 @@ else
   print -u2 -- "Oh My Zsh is not installed at $ZSH"
 fi
 
+setopt noautomenu
+setopt nomenucomplete
+setopt nosharehistory
+
 # Keep PATH entries unique while loading optional developer tools.
 typeset -gU path PATH
 
